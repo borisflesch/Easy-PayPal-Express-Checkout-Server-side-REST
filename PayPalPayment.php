@@ -2,14 +2,16 @@
 class PayPalPayment {
 
 	protected $sandbox_mode,
-			  $client_id,
-			  $client_secret;
+		  $client_id,
+		  $client_secret,
+		  $access_token;
 
 
 	public function __construct() {
 		$this->sandbox_mode = 1;
 		$this->client_id = "";
 		$this->client_secret = "";
+		$this->access_token = "";
 	}
 
 	/**
@@ -146,7 +148,8 @@ class PayPalPayment {
 		$authorization = "Authorization: Bearer ".$this->getAccessToken();
 
 		$ch = curl_init();
-
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
 		if ($this->sandbox_mode) {
 			curl_setopt($ch, CURLOPT_URL, "https://api.sandbox.paypal.com/v1/payments/payment");
 		} else {
@@ -177,6 +180,8 @@ class PayPalPayment {
 		$data = ["payer_id" => $payerID];
 
 		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
 		curl_setopt($ch, CURLOPT_URL, $paypal_url);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json' , $authorization ));
 		curl_setopt($ch, CURLOPT_POST, 1);
